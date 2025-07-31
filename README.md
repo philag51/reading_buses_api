@@ -26,9 +26,9 @@ In the code at the end of the url, and the 12 digit code of the specific bus sto
 the rgbus_stops.py file.
 If no bus times are returned, it's for one of few reasons:
 
-Your API Key is invalid
-You entered an invalid bus stop code
-The API is down
+Your API Key is invalid,
+You entered an invalid bus stop code,
+The API is down,
 There's no buses for that time (E.g some bus services do not come on Sundays, public holidays or late evenings)
 
 
