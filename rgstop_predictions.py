@@ -2,8 +2,12 @@ import requests as rq
 import xml.etree.ElementTree as ET
 from datetime import datetime
 
-# URL with XML bus data
-url = "https://reading-opendata.r2p.com/api/v1/siri-sm?api_token={add api key here}&location={add 12 digit bus stop code here}" #add your API key and any 12 digit bus stop code from the list of bus stop - make sure to remove the curly brackets
+# Replace with your actual API key and 12 digit stop code (Paste them between the quote marks)
+api_token = ""
+stop_code = ""
+
+# Build URL with API token and bus stop code
+url = f"https://reading-opendata.r2p.com/api/v1/siri-sm?api_token={api_token}&location={stop_code}"
 
 # Fetch XML from the API
 response = rq.get(url)
@@ -21,7 +25,7 @@ if response.status_code == 200:
     stop_name_elem = stop_monitoring_delivery.find('siri:MonitoringName', ns)
     stop_name = stop_name_elem.text if stop_name_elem is not None else "Unknown Stop"
 
-    print('Departures from', stop_name)
+    print(f'Departures from {stop_name}:\n')
 
     # Loop over the first 10 bus entries
     for visit in visits[:10]:
@@ -29,22 +33,17 @@ if response.status_code == 200:
 
         line_ref = journey.find('siri:LineRef', ns)
         destination = journey.find('siri:DestinationName', ns)
-        departure_elem = journey.find('siri:OriginAimedDepartureTime', ns)
+        monitored_call = journey.find('siri:MonitoredCall', ns)
+        aimed_departure = monitored_call.find('siri:AimedDepartureTime', ns) if monitored_call is not None else None
 
-        # Extract text safely
-        line_text = line_ref.text if line_ref is not None else "N/A"
-        destination_text = destination.text if destination is not None else "N/A"
-
-        # Convert departure time
-        if departure_elem is not None and departure_elem.text:
-            try:
-                departure_time = datetime.fromisoformat(departure_elem.text)
-                departure_text = departure_time.strftime("%H:%M")
-            except ValueError:
-                departure_text = "Invalid time"
+        # Parse and format time
+        if aimed_departure is not None:
+            aimed_time = datetime.fromisoformat(aimed_departure.text)
+            time_str = aimed_time.strftime('%H:%M')  # HH:MM format
         else:
-            departure_text = "N/A"
+            time_str = "Unknown"
 
-        print(f"Route: {line_text}, Destination: {destination_text}, Departure: {departure_text}")
+        print(f"Route {line_ref.text if line_ref is not None else '?'}: to {destination.text if destination is not None else '?'}, Expected at: {time_str}")
+
 else:
-    print("Failed to fetch bus data.")
+    print("Failed to fetch data. Status code:", response.status_code)
