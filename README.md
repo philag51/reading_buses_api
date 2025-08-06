@@ -8,6 +8,12 @@ Files:
 17tracker.py is file that pinpoints all the active buses on the 17 bus route in Reading including the vehicle no. and time last seen
 I'm working on adding a feature where the map automatically refreshes in real time similar to the Reading Buses app
 
+live_dynamic_busmap.html
+
+live_dynamic_busmap.html is improved version of the 17tracker.py file where it automatically refreshes after 30 whole seconds and
+even if you move away from the centre of the map, it will keep where you on the map. The scripting for the API calls and interactivity is 
+done via embedded javascript within the html code (<script></script>). I'll keep working on it to include other bus services
+
 rgbus_stops.py:
 
 This file generates a json list of all the bus stops served by Reading Buses services as well as bus stops in the surrounding Berkshire areas 
