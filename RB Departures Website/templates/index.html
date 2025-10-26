@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Bus Departures</title>
+    <style>
+    body {
+        background: url("/static/bus dep app background.png") no-repeat center center fixed;
+        background-size: cover;  /* make it fill the whole screen */
+        color: white;            /* keep text white */
+        font-family: Arial, sans-serif;
+        padding: 20px;
+    }
+
+    h1 {
+        margin-bottom: 20px;
+    }
+
+    ul {
+        list-style: none;
+        padding: 0;
+    }
+
+    li {
+        margin-bottom: 10px;
+        font-size: 18px;
+    }
+
+    img {
+        vertical-align: middle;
+        margin-right: 10px;
+    }
+</style>
+
+</head>
+<body>
+    <h1 id="stop-name"></h1>
+    <ul id="departures"></ul>
+
+    <script>
+        fetch('/bus-data')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('stop-name').innerText = `Departures from ${data.stop_name}`;
+                const list = document.getElementById('departures');
+                list.innerHTML = '';
+
+                data.departures.forEach(dep => {
+                    const li = document.createElement('li');
+                    li.innerHTML = `
+                        <img src="${dep.logo}" width="32" height="32">
+                        Route ${dep.route}: to ${dep.destination}, Expected at: ${dep.time}
+                    `;
+                    list.appendChild(li);
+                });
+            });
+    </script>
+</body>
+</html>
